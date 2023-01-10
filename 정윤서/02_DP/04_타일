@@ -1,0 +1,56 @@
+# [Baekjoon - 11726] **2×n 타일링**
+
+---
+
+| https://www.acmicpc.net/problem/2748 |
+| --- |
+| 2×n 크기의 직사각형을 1×2, 2×1 타일로 채우는 방법의 수를 구하는 프로그램을 작성하시오.
+아래 그림은 2×5 크기의 직사각형을 채운 한 가지 방법의 예이다. |
+| 입력 |
+| 첫째 줄에 n이 주어진다. (1 ≤ n ≤ 1,000) |
+| 출력 |
+| 첫째 줄에 2×n 크기의 직사각형을 채우는 방법의 수를 10,007로 나눈 나머지를 출력한다. |
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ce1842e7-eb40-424e-a880-3ec98fbc3e7f/Untitled.png)
+
+---
+
+## 코드
+
+```python
+def Input():
+    n = int(input())
+    return n
+
+def Tile(n):
+    ways = []
+    for i in range(1, n+1):
+        if i == 1:
+            ways.append(1)
+        elif i == 2:
+            ways.append(2)
+        else:
+            ways.append(ways[i-2] + ways[i-3])
+    return ways[-1]
+
+def main():
+    n = Input()
+    ways = Tile(n)
+    print(ways%10007)
+
+main()
+```
+
+---
+
+## 설명
+
+n이 하나씩 늘어날 때마다 이전 방법의 수에서 얼마가 더해질 것 같은데 생각하면 생각할수록 복잡해지길래 순서대로 쭉 써봤다. 그러니까 피보나치 수열과 같은 규칙이 나타났다.
+
+처음에 1, 그다음이 2이고 그 뒤로부터는 f(n) = f(n-1) + f(n-2) 의 형식이었다.
+
+---
+
+## 소요 시간
+
+17:34:76

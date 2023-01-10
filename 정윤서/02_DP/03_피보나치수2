@@ -1,0 +1,69 @@
+# [Baekjoon - 2748] 피보나치 수 2
+
+---
+
+| https://www.acmicpc.net/problem/2748 |
+| --- |
+| 피보나치 수는 0과 1로 시작한다. 0번째 피보나치 수는 0이고, 1번째 피보나치 수는 1이다. 그 다음 2번째 부터는 바로 앞 두 피보나치 수의 합이 된다.
+
+이를 식으로 써보면 Fn = Fn-1 + Fn-2 (n ≥ 2)가 된다.
+
+n=17일때 까지 피보나치 수를 써보면 다음과 같다.
+
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597
+
+n이 주어졌을 때, n번째 피보나치 수를 구하는 프로그램을 작성하시오. |
+| 입력 |
+| 첫째 줄에 n이 주어진다. n은 90보다 작거나 같은 자연수이다. |
+| 출력 |
+| 첫째 줄에 n번째 피보나치 수를 출력한다. |
+
+---
+
+## 코드
+
+```python
+def Input():
+    n = int(input())
+    return n
+
+"""def fibonacci_recursive(n):
+    if n == 0:
+        return 0
+    elif n == 1 or n == 2:
+        return 1
+    else:
+        return fibonacci_recursive(n-1) + fibonacci_recursive(n-2)"""
+
+def fibonacci(n):
+    fibonacci_nums = []
+    for i in range(n+1):
+        if i == 0:
+            fibonacci_nums.append(0)
+        elif i == 1:
+            fibonacci_nums.append(1)
+        else:
+            fibonacci_nums.append(fibonacci_nums[i-1] + fibonacci_nums[i-2])
+    return fibonacci_nums[-1]
+
+def main():
+    n = Input()
+    nth_fibonacci = fibonacci(n)
+    print(nth_fibonacci)
+
+main()
+```
+
+---
+
+## 설명
+
+처음에는 fibonacci_recursive() 함수처럼 재귀를 사용했는데 시간 초과가 떴다.
+
+그래서 부녀회장 문제 때처럼 리스트 만들어서 풀었더니 시간 초과가 뜨지 않고 해결되었다.
+
+---
+
+## 소요 시간
+
+13:10:60

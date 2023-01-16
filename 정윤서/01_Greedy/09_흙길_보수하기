@@ -1,0 +1,64 @@
+# [Baekjoon - 1911] 흙길 보수하기
+
+| https://www.acmicpc.net/problem/1911 |
+| --- |
+| 어젯밤 겨울 캠프 장소에서 월드 본원까지 이어지는, 흙으로 된 비밀길 위에 폭우가 내려서 N (1 <= N <= 10,000) 개의 물웅덩이가 생겼다. 월드학원은 물웅덩이를 덮을 수 있는 길이 L (L은 양의 정수) 짜리 널빤지들을 충분히 가지고 있어서, 이들로 다리를 만들어 물웅덩이들을 모두 덮으려고 한다. 물웅덩이들의 위치와 크기에 대한 정보가 주어질 때, 모든 물웅덩이들을 덮기 위해 필요한 널빤지들의 최소 개수를 구하여라. |
+
+| 입력 |
+| --- |
+| 첫째 줄에 N과 L이 들어온다.
+둘째 줄부터 N+1번째 줄까지 총 N개의 줄에 각각의 웅덩이들의 정보가 주어진다. 웅덩이의 정보는 웅덩이의 시작 위치와 끝 위치로 이루어진다. 각 위치는 0이상 1,000,000,000이하의 정수이다. |
+
+| 출력 |
+| --- |
+| 첫째 줄에 모든 물웅덩이들을 덮기 위해 필요한 널빤지들의 최소 개수를 출력한다. |
+
+---
+
+## 코드
+
+```python
+import math
+
+def Input():
+    n, l = map(int, input().split())
+    pool = []
+    for i in range(n):
+        lt = list(map(int, input().split()))
+        pool.append(lt)
+    return l, pool
+
+def countingPlanks(l, pool):
+    pool.sort()
+    last = 0
+    planks = 0
+    for p in pool:
+        if p[0] > last:
+            plank = math.ceil((p[1] - p[0]) / l)
+            last = p[0] + plank*l - 1
+            planks += plank
+        else:
+            plank = math.ceil((p[1] - last - 1) / l)
+            last = max(last + plank*l - 1, last)
+            planks += plank
+    return planks
+
+def main():
+    l, pool = Input()
+    planks = countingPlanks(l, pool)
+    print(planks)
+
+main()
+```
+
+---
+
+## 설명
+
+널빤지 길이가 엄청 길어서 한 번에 여러 개의 웅덩이를 덮을 수 있는 경우를 고려했음에도 틀렸다. 어떤 부분을 고려하지 않은 것인지 모르겠다.
+
+---
+
+## **소요 시간**
+
+깜빡하고 안 쟀다…

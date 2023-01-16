@@ -1,0 +1,75 @@
+# [Baekjoon - 1459] 걷기
+
+| https://www.acmicpc.net/problem/1459 |
+| --- |
+| 세준이는 학교에서 집으로 가려고 한다. 도시의 크기는 무한대이고, 도시의 세로 도로는 모든 정수 x좌표마다 있고, 가로 도로는 모든 정수 y좌표마다 있다. 세준이는 현재 (0, 0)에 있다. 그리고 (X, Y)에 위치한 집으로 가려고 한다. 세준이가 걸을 수 있는 방법은 두가지 인데, 하나는 도로를 따라서 가로나 세로로 한 블록 움직여서 이번 사거리에서 저 사거리로 움직이는 방법이고, 블록을 대각선으로 가로지르는 방법이 있다.
+세준이가 집으로 가는데 걸리는 최소시간을 구하는 프로그램을 작성하시오. |
+
+| 입력 |
+| --- |
+| 첫째 줄에 집의 위치 X Y와 걸어서 한 블록 가는데 걸리는 시간 W와 대각선으로 한 블록을 가로지르는 시간 S가 주어진다. X와 Y는 1,000,000,000보다 작거나 같은 음이 아닌 정수이고, W와 S는 10,000보다 작거나 같은 자연수이다. |
+
+| 출력 |
+| --- |
+| 첫째 줄에 세준이가 집에가는데 걸리는 최소시간을 출력한다. |
+
+---
+
+## 코드
+
+```python
+def Input():
+    x, y, w, s = map(int, input().split())
+    return x, y, w, s
+
+# 대각선으로 최대한 가기 (일반적인 최단경로)
+def goDiagonal(x, y, w, s):
+    numD = min(x, y)
+    numS = max(x, y) - numD
+    cost = numD*s + numS*w
+    return cost
+
+# 가로 또는 세로로만
+def goStraight(x, y, w):
+    cost = w*x + w*y
+    return cost
+
+# 그 외
+def goMix(x, y, w, s):
+    v = (x+y) % 2
+    # x+y가 홀수면 1번 직선, 나머지 대각선
+    # x+y가 짝수면 모두 대각선 (max(x, y))
+    cost = v*w + (max(x, y)-v)*s
+    return cost
+
+def main():
+    x, y, w, s = Input()
+    result1 = goDiagonal(x, y, w, s)
+    result2 = goStraight(x, y, w)
+    result3 = goMix(x, y, w, s)
+    # 셋 중 최단 경로 채택
+    result = min(result1, result2, result3)
+    print(result)
+
+main()
+```
+
+---
+
+## 설명
+
+goMix() 이부분 처음에 생각 못했어서 헤맸다.
+
+예제3이 (2 0 12 10) 이었는데 출력값이 왜 20인지 고민하다가 알게 되었다.
+
+아래 그림과 같이 하면 되기 때문이었다. 가로세로와 대각선의 가중치가 달라서 일반적인 최단경로 문제처럼 생각하면 안 되는 것이었다.
+
+![2A3996AC-97C6-46F7-BD1A-87BEF769DA4E.jpeg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/871ea348-e464-44c0-a85c-ebb47eb79784/2A3996AC-97C6-46F7-BD1A-87BEF769DA4E.jpeg)
+
+---
+
+## **소요 시간**
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6324ce7f-ae2f-425d-a46a-ef8cb3f62cb2/Untitled.png)
+
+27:43:39

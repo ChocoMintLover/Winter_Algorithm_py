@@ -1,0 +1,122 @@
+# [Baekjoon - 2644] 촌수
+
+---
+
+| https://www.acmicpc.net/problem/2644 |
+| --- |
+| 우리 나라는 가족 혹은 친척들 사이의 관계를 촌수라는 단위로 표현하는 독특한 문화를 가지고 있다. 이러한 촌수는 다음과 같은 방식으로 계산된다. 기본적으로 부모와 자식 사이를 1촌으로 정의하고 이로부터 사람들 간의 촌수를 계산한다. 예를 들면 나와 아버지, 아버지와 할아버지는 각각 1촌으로 나와 할아버지는 2촌이 되고, 아버지 형제들과 할아버지는 1촌, 나와 아버지 형제들과는 3촌이 된다.
+여러 사람들에 대한 부모 자식들 간의 관계가 주어졌을 때, 주어진 두 사람의 촌수를 계산하는 프로그램을 작성하시오. |
+| 입력 |
+| 사람들은 1, 2, 3, …, n (1 ≤ n ≤ 100)의 연속된 번호로 각각 표시된다. 입력 파일의 첫째 줄에는 전체 사람의 수 n이 주어지고, 둘째 줄에는 촌수를 계산해야 하는 서로 다른 두 사람의 번호가 주어진다. 그리고 셋째 줄에는 부모 자식들 간의 관계의 개수 m이 주어진다. 넷째 줄부터는 부모 자식간의 관계를 나타내는 두 번호 x,y가 각 줄에 나온다. 이때 앞에 나오는 번호 x는 뒤에 나오는 정수 y의 부모 번호를 나타낸다.
+각 사람의 부모는 최대 한 명만 주어진다. |
+| 출력 |
+| 입력에서 요구한 두 사람의 촌수를 나타내는 정수를 출력한다. 어떤 경우에는 두 사람의 친척 관계가 전혀 없어 촌수를 계산할 수 없을 때가 있다. 이때에는 -1을 출력해야 한다. |
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+def Input():
+    n = int(sys.stdin.readline())
+    a, b = map(int, sys.stdin.readline().split())
+    m = int(sys.stdin.readline())
+    kinship = []
+    for _ in range(m):
+        kinship.append(list(map(int, sys.stdin.readline().split())))
+    return n, a, b, kinship
+
+def linking(n, linked):
+    computers = [[] for _ in range(n+1)]
+    for c in linked:
+        computers[c[0]] += [c[1]]
+        computers[c[1]] += [c[0]]
+    return computers
+
+def DFS(a, b, n, family):
+    visited = [0 for _ in range(n+1)]
+    d = deque()
+    d.append(a)
+    while d:
+        node = d.pop()
+        for n in family[node]:
+            if visited[n] == 0:
+                visited[n] = visited[node] + 1
+                d.append(n)
+    return visited
+
+def main():
+    n, a, b, kinship = Input()
+    family = linking(n, kinship)
+    visited = DFS(a, b, n, family)
+    if visited[b] > 0:
+        print(visited[b])
+    else:
+        print(-1)
+
+main()
+
+"""def linking(kinship):
+    family = dict()
+    for k in kinship:
+        if k[0] in family:
+            family[k[0]].append(k[1])
+        else:
+            family[k[0]] = [k[1]]
+    return family
+
+def findingStartNodes(n, family):
+    start_nodes = []
+    values = []
+    for v in family.values():
+        values += v
+    for i in range(1, n+1):
+        if i not in values:
+            start_nodes.append(i)
+    return start_nodes
+
+def findingParent(x, family, start_nodes):
+    parent = 0
+    child = x
+    history = set([child])
+    while True:
+        for k, v in family.items():
+            if child in v:
+                parent = k
+                child = k
+                history.add(parent)
+                break
+        if parent in start_nodes:
+            break
+    return history
+
+def main():
+    n, a, b, kinship = Input()
+    family = linking(kinship)
+    start_nodes = findingStartNodes(n, family)
+    a_parents = findingParent(a, family, start_nodes)
+    b_parents = findingParent(b, family, start_nodes)
+    if len(a_parents & b_parents) == 0:
+        print(-1)
+    else:
+        print(len(a_parents ^ b_parents))"""
+```
+
+---
+
+## 설명
+
+처음에는 촌수를 찾아야 하는 a, b에서 거꾸로 거슬러 올라간 다음 경로를 구해서 a에서 b로 가는 경로를 구하는 걸로 문제를 풀었다. 그런데 시간 초과가 나서 방법을 바꾸었다.
+
+DFS를 사용해서 a에서 출발해서 b에 도달할 때까지 반복했다. 노드 k에서 노드 m으로 이동했다면, visited[m] = visited[k] + 1로 갱신함으로써 a, b의 촌수를 구했다.
+
+만약 모든 노드를 다 방문했음에도 visited[b]의 값이 0이라면 a와 b는 아무런 연관이 없는 것이므로 -1을 출력한다.
+
+---
+
+## 소요 시간
+
+01:13:09:39

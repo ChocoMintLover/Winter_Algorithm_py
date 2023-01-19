@@ -1,0 +1,112 @@
+# 05. 경로 찾기
+
+# [Baekjoon - 11403] 경로 찾기
+
+---
+
+| https://www.acmicpc.net/problem/11403 |
+| --- |
+| 가중치 없는 방향 그래프 G가 주어졌을 때, 모든 정점 (i, j)에 대해서, i에서 j로 가는 경로가 있는지 없는지 구하는 프로그램을 작성하시오. |
+| 입력 |
+| 첫째 줄에 정점의 개수 N (1 ≤ N ≤ 100)이 주어진다. 둘째 줄부터 N개 줄에는 그래프의 인접 행렬이 주어진다. i번째 줄의 j번째 숫자가 1인 경우에는 i에서 j로 가는 간선이 존재한다는 뜻이고, 0인 경우는 없다는 뜻이다. i번째 줄의 i번째 숫자는 항상 0이다. |
+| 출력 |
+| 총 N개의 줄에 걸쳐서 문제의 정답을 인접행렬 형식으로 출력한다. 정점 i에서 j로 가는 경로가 있으면 i번째 줄의 j번째 숫자를 1로, 없으면 0으로 출력해야 한다. |
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+def Input():
+    n = int(sys.stdin.readline())
+    matrix = []
+    while True:
+        lt = sys.stdin.readline().rstrip()
+        if lt == '':
+            return n, matrix
+        matrix.append(list(map(int, lt.split())))
+    
+def linking(matrix):
+    a = []
+    graph = [[] for _ in range(len(matrix))]
+    for i in range(len(graph)):
+        for j in range(len(graph)):
+            if matrix[i][j] == 1:
+                graph[i] += [j]
+                a.append(i)
+    return list(set(a)), graph
+
+def BFS(a, graph):
+    visited = [0 for _ in range(len(graph))]
+    root = []
+    q = deque()
+    q.append(a)
+    while q:
+        node = q.popleft()
+        for n in graph[node]:
+            if visited[n] == 0:
+                visited[n] = 1
+                q.append(n)
+                root.append(n)
+    return root
+
+def findRoots(a, graph):
+    roots = dict()
+    for i in a:
+        roots[i] = BFS(i, graph)
+    return roots
+
+def drawMatrix(length, roots):
+    adjacent_matrix = []
+    for _ in range(length):
+        adjacent_matrix.append([0 for _ in range(length)])
+    for k, v in roots.items():
+        for i in v:
+            adjacent_matrix[k][i] = 1
+    return adjacent_matrix
+
+def main():
+    n, matrix = Input()
+    a, graph = linking(matrix)
+    roots = findRoots(a, graph)
+    adjacent_matrix = drawMatrix(len(matrix), roots)
+    for line in adjacent_matrix:
+        lt = [str(a) for a in line]
+        print(' '.join(lt))
+
+main()
+```
+
+---
+
+## 설명
+
+1. linking
+    
+    행렬을 받아온 뒤에 BFS를 사용하기 위해 방향 그래프를 그렸다. (처음에 무방향 그래프인 줄 알고 무방향 그래프로 그려서 마지막에 잠깐 헤맸다.)
+    
+    어차피 BFS를 돌 때 같은 row에 있으면 한 번에 돌기 때문에 중복된 row는 제거했다.
+    
+2. BFS
+    
+    BFS를 도는데 거쳐간 경로를 root에 추가해서 반환했다. 
+    
+3. findRoots
+    
+    root를 한 데 모은 리스트를 생성했다.
+    
+4. drawMatrix
+    
+    findRoots에서 모은 경로를 따라가면서 2차원 리스트 값을 1로 바꾸었다.
+    
+
+**BFS랑 DFS랑 구현이 어떻게 다른지, 뭐가 뭔지 모르겠다.**
+
+---
+
+## 소요 시간
+
+01:47:22:74

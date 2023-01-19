@@ -1,0 +1,36 @@
+ans = 0
+
+def dfs(graph, v, visited, count):
+    visited[v] = 1
+    global ans
+    count += 1
+    # print(v)
+    if v == c2:
+        ans = count
+    for i in graph[v]:
+        if not visited[i]:
+            dfs(graph, i, visited, count)
+
+n = int(input())
+
+
+c1, c2 = map(int, input().split())
+m = int(input())
+
+data = [[] for i in range(n+1)]
+for i in range(m):
+    cache = list(map(int, input().split(' ')))
+    parent = cache[0]
+    child = cache[1]
+
+    data[parent].append(child)
+    data[child].append(parent)
+# print(data)
+
+visit = [0 for i in range(n+1)]
+
+dfs(data, c1, visit, 0)
+if ans == 0:
+    print(-1)
+else:
+    print(ans-1)

@@ -1,0 +1,30 @@
+
+count = 0
+def dfs(graph, v, visited):
+    visited[v] = 1
+    global count
+    count += 1
+
+    for i in graph[v]:
+        if not visited[i]:
+            dfs(graph, i, visited)
+
+cpu = int(input())
+network = int(input())
+
+data = [[] for i in range(cpu+1)]
+for i in range(network):
+    cache = list(map(int, input().split(' ')))
+    cache.sort()
+    parent = cache[0]
+    child = cache[1]
+
+    data[parent].append(child)
+    data[child].append(parent)
+# print(data)
+
+visit = [0 for i in range(cpu+1)]
+
+dfs(data, 1, visit)
+
+print(count-1)

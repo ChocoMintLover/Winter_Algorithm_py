@@ -1,0 +1,79 @@
+# [Baekjoon - 7576] 토마토
+
+---
+
+[https://www.acmicpc.net/problem/7576](https://www.acmicpc.net/problem/7576)
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+def Input():
+    m, n = map(int, sys.stdin.readline().split())
+    box = []
+    for _ in range(n):
+        box.append(list(map(int, sys.stdin.readline().split())))
+    return m, n, box
+
+def BFS(m, n, box):
+    dx = [1,-1,0,0]
+    dy = [0,0,1,-1]
+    q = deque()
+    points = FindingStartingPoints(m, n, box)
+    for p in points:
+        q.append(p)
+    while q:
+        x, y = q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if nx < 0 or nx >= m or ny < 0 or ny >= n:
+                continue
+            if box[ny][nx] == 0:
+                box[ny][nx] = box[y][x] + 1
+                q.append((nx,ny))
+    return box
+
+def FindingStartingPoints(m, n, box):
+    points = []
+    for i in range(n):
+        for j in range(m):
+            if box[i][j] == 1:
+                points.append((j, i))
+    return points
+
+def Tomato(m, n, box):
+    ans = 0
+    for i in range(n):
+        for j in range(m):
+            if box[i][j] == 0:
+                return -1
+            ans = max(ans, box[i][j])
+    return ans - 1
+
+def main():
+    m, n, box = Input()
+    box = BFS(m, n, box)
+    ans = Tomato(m, n, box)
+    print(ans)
+
+main()
+```
+
+---
+
+## 설명
+
+익은 토마토(1)에서부터 BFS 돌리면 되는데 익은 토마토가 여러 군데 있는 경우 동시에 주변 토마토들이 익기 시작하므로 1의 위치를 먼저 다 찾아놓은 다음에 deque에 넣고 BFS를 실행시킨다.
+
+처음에는 동시에 여러 군데에서 토마토가 익는 것을 고려하지 않아서 틀렸다.
+
+---
+
+## 소요 시간
+
+01:17:13:22

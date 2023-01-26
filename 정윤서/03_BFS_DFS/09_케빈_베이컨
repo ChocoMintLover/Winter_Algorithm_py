@@ -1,0 +1,66 @@
+# 09. 케빈 베이컨의 6단계 법칙
+
+# [Baekjoon - 1389] **케빈 베이컨의 6단계 법칙**
+
+---
+
+[https://www.acmicpc.net/problem/1389](https://www.acmicpc.net/problem/1389)
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+def Input():
+    n, m = map(int, sys.stdin.readline().split())
+    friends = []
+    for _ in range(m):
+        friends.append(list(map(int, sys.stdin.readline().split())))
+    return n, friends
+
+def linking(n, friends):
+    graph = [[] for _ in range(n+1)]
+    for c in friends:
+        graph[c[0]] += [c[1]]
+        graph[c[1]] += [c[0]]
+    return graph
+
+def BFS(n, graph, x):
+    visited = [0 for _ in range(n+1)]
+    kevin_bacon = [0 for _ in range(n+1)]
+    visited[x] = 1
+    q = deque([x])
+    while q:
+        c = q.popleft()
+        for p in graph[c]:
+            if visited[p] == 0:
+                q.append(p)
+                visited[p] = 1
+                kevin_bacon[p] = kevin_bacon[c] + 1
+    return sum(kevin_bacon)
+
+def main():
+    n, friends = Input()
+    graph = linking(n, friends)
+    kevin_bacon = []
+    for i in range(1, n+1):
+        kevin_bacon.append(BFS(n, graph, i))
+    print(kevin_bacon.index(min(kevin_bacon)) + 1)
+
+main()
+```
+
+---
+
+## 설명
+
+무방향 그래프이므로 BFS로 돌면서 kevin_bacon이라는 리스트에 케빈 베이컨을 추가한다. 1과 2가 2번만에 연결되고, 2와 3이 연결되어 있다면, 1과 3은 2 + 1 = 3 번만에 연결되므로, kevin_bacon에는 이전 사람의 케빈 베이컨 + 1 을 추가한다.
+
+---
+
+## 소요 시간
+
+19:18:37

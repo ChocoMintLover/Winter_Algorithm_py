@@ -1,0 +1,55 @@
+# [Baekjoon - 1987] 알파벳
+
+---
+
+[https://www.acmicpc.net/problem/1987](https://www.acmicpc.net/problem/1987)
+
+---
+
+## 코드
+
+```python
+import sys
+
+def Input():
+    r, c = map(int, sys.stdin.readline().split())
+    alphabets = []
+    for _ in range(r):
+        alphabets.append(list(sys.stdin.readline().rstrip()))
+    for i in range(r):
+        for j in range(c):
+            alphabets[i][j] = ord(alphabets[i][j]) - 65
+    return r, c, alphabets
+
+def DFS(alphabets, x, y, r, c, visited, cnt):
+    global ans
+    ans = max(ans, cnt)
+    dx = [1,-1,0,0]
+    dy = [0,0,1,-1]
+    visited[alphabets[y][x]] = 1
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
+        if 0 <= nx < c and 0 <= ny < r and visited[alphabets[ny][nx]] == 0:
+            visited[alphabets[ny][nx]] = 1
+            DFS(alphabets, nx, ny, r, c, visited, cnt+1)
+            visited[alphabets[ny][nx]] = 0
+
+r, c, alphabets = Input()
+visited = [0 for _ in range(26)]
+ans = 0
+DFS(alphabets, 0, 0, r, c, visited, 1)
+print(ans)
+```
+
+---
+
+## 설명
+
+DFS를 이용해서 4방향으로 이동하는데, 이미 간 곳(또는 겹치는 알파벳)이면 더 이상 진전하지 못한다. 가다가 막혀서 다른 길을 택했을 때는 가지 않은 곳에 갔다고 표시되어 있으면 안 되므로 visited 값을 다시 0으로 바꾼다.
+
+---
+
+## 소요 시간
+
+54:40:41 + a

@@ -1,0 +1,101 @@
+# [Baekjoon - 2468] 안전 영역
+
+---
+
+[https://www.acmicpc.net/problem/2468](https://www.acmicpc.net/problem/2468)
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+import copy
+
+def Input():
+    n = int(sys.stdin.readline())
+    area = []
+    for _ in range(n):
+        area.append(list(map(int, sys.stdin.readline().split())))
+    return n, area
+
+def BFS(area, x, y, n):
+    dx = [0,0,1,-1]
+    dy = [1,-1,0,0]
+    q = deque()
+    q.append((x,y))
+    area[y][x] = 0
+    while q:
+        x, y = q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if nx < 0 or nx >= n or ny < 0 or ny >= n:
+                continue
+            if area[ny][nx] != 0:
+                area[ny][nx] = 0
+                q.append((nx, ny))
+    return area
+
+"""def FindingRange(area):
+    mini = 101
+    maxi = 0
+    for e in area:
+        mini = min(mini, min(e))
+        maxi = max(maxi, max(e))
+    return mini, maxi"""
+
+def Raining(n, mini, maxi, area):
+    land = []
+    num = 0
+    for i in range(mini, maxi):
+        land = copy.deepcopy(area)
+        cnt = 0
+        for j in range(n):
+            for k in range(n):
+                if land[j][k] <= i:
+                    land[j][k] = 0
+        for a in range(n):
+            for b in range(n):
+                if land[a][b] != 0:
+                    land = BFS(land, b, a, n)
+                    cnt += 1
+        num = max(num, cnt)
+    return num
+
+def main():
+    n, area = Input()
+    #mini, maxi = FindingRange(area)
+    mini, maxi = 0, 100
+    num = Raining(n, mini, maxi, area)
+    print(num)
+
+main()
+```
+
+---
+
+## 설명
+
+~~가장 낮은 높이와 높은 높이를 구해서 범위를 알아낸다.~~
+
+범위가 넓지 않아서 그냥 100번 정도 돌리는 게 낫다.
+
+높이는 1이상 100 이하의 정수이므로 범위를 1 ~ 100로 정한다.
+
+범위 내에서 BFS를 실행하면서 최대 안전 영역 개수를 갱신한다.
+
+범위 내에서 다 돌고 나서 최대 안전 영역 개수를 반환한다.
+
+~~결론적으로 틀렸는데 어느 부분이 잘못 되었는지 찾지 못했다.~~
+
+찾아보니까 비가 오지 않는 경우 (높이가 0인 경우) 를 고려해야 맞다고 인정해준다고 해서 범위를 0 ~ 100으로 수정했더니 진짜 맞았다.
+
+비가 안 오는 경우에는 통째로 하나라서 영역 개수가 1일 텐데 왜 고려해주어야 할까?
+
+---
+
+## 소요 시간
+
+최소 30분

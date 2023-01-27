@@ -1,0 +1,64 @@
+# [Baekjoon - 10971] 외판원 순회 2
+
+---
+
+[https://www.acmicpc.net/problem/10971](https://www.acmicpc.net/problem/10971)
+
+---
+
+## 코드
+
+```python
+import sys
+from collections import deque
+
+def Input():
+    n = int(sys.stdin.readline())
+    w = []
+    for _ in range(n):
+        w.append(list(map(int, sys.stdin.readline().split())))
+    return n, w
+
+def linking(n, w):
+    graph = [[] for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            if w[i][j] != 0:
+                graph[i] += [j]
+                graph[j] += [i]
+    return graph
+
+def DFS(n, w, graph, visited, weight, s, cities):
+    global stacked_weight
+    for g in graph[s]:
+        if cities == n:
+            stacked_weight = min(stacked_weight, weight)
+            return
+        if visited[g] == 0:
+            visited[g] = 1
+            DFS(n, w, graph, visited, weight+w[s][g], g, cities+1)
+            visited[g] = 0
+                
+n, w = Input()
+graph = linking(n, w)
+visited = [0 for _ in range(n)]
+stacked_weight = 10000000
+DFS(n, w, graph, visited, 0, 0, 0)
+print(stacked_weight)
+```
+
+---
+
+## 설명
+
+DFS - 백트래킹
+
+메모리 초과 → 원래 stacked_weight에 계속 쌓아두고 최솟값 반환했는데 메모리 초과 나서 수정
+
+시간 초과 → 해결 못함
+
+---
+
+## 소요 시간
+
+22:00:89 + a
